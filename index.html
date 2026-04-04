@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>서지찬 — Frontend Developer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f9f8f6;
+      --bg2: #f2f0ec;
+      --bg3: #eceae5;
+      --surface: #ffffff;
+      --surface2: #f5f4f0;
+      --border: rgba(0,0,0,0.07);
+      --border2: rgba(0,0,0,0.13);
+      --text: #1a1916;
+      --text2: #5c5a54;
+      --text3: #a09e98;
+      --accent: #5548e8;
+      --accent2: #3d32c4;
+      --accent-bg: rgba(85,72,232,0.07);
+      --accent-border: rgba(85,72,232,0.2);
+      --green: #1a8c5a;
+      --green-bg: rgba(26,140,90,0.08);
+      --amber: #a06000;
+      --amber-bg: rgba(160,96,0,0.07);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Sans KR', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.015'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 3rem;
+      background: rgba(249,248,246,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+    .nav-logo span { color: var(--accent); }
+
+    .nav-links { display: flex; gap: 2.5rem; }
+    .nav-links a {
+      font-size: 0.82rem;
+      font-weight: 400;
+      color: var(--text2);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8rem 3rem 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg-glow {
+      position: absolute;
+      top: -20%;
+      right: -10%;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(ellipse at center, rgba(85,72,232,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent2);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .hero-label::before {
+      content: '';
+      display: inline-block;
+      width: 24px;
+      height: 1px;
+      background: var(--accent2);
+    }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(3.5rem, 9vw, 7.5rem);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 .dim { color: var(--text3); }
+
+    .hero-sub {
+      font-size: 1rem;
+      color: var(--text2);
+      max-width: 520px;
+      margin: 2rem 0 3rem;
+      line-height: 1.8;
+      font-weight: 300;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem 1.8rem;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem 1.8rem;
+      border: 1px solid var(--border2);
+      color: var(--text2);
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 400;
+      text-decoration: none;
+      transition: all 0.2s;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    .btn-outline:hover { border-color: var(--accent-border); color: var(--accent2); transform: translateY(-1px); }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: var(--text3);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .scroll-line {
+      width: 40px;
+      height: 1px;
+      background: var(--text3);
+      animation: scrollAnim 2s ease-in-out infinite;
+    }
+    @keyframes scrollAnim {
+      0%, 100% { transform: scaleX(1); opacity: 0.3; }
+      50% { transform: scaleX(0.5); opacity: 1; }
+    }
+
+    /* ── SECTIONS ── */
+    section { padding: 6rem 3rem; position: relative; }
+
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent2);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: clamp(2rem, 4vw, 3rem);
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 3rem;
+    }
+
+    /* ── ABOUT ── */
+    #about { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .about-text {
+      font-size: 1rem;
+      color: var(--text2);
+      line-height: 1.9;
+    }
+
+    .about-text p + p { margin-top: 1.2rem; }
+
+    .about-text strong { color: var(--text); font-weight: 500; }
+
+    .info-list { list-style: none; margin-top: 2rem; }
+    .info-list li {
+      display: flex;
+      gap: 1rem;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+    .info-list li:first-child { border-top: 1px solid var(--border); }
+    .info-list .label {
+      color: var(--text3);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      min-width: 80px;
+      padding-top: 0.05rem;
+    }
+    .info-list .value { color: var(--text2); }
+    .info-list a { color: var(--accent2); text-decoration: none; }
+    .info-list a:hover { text-decoration: underline; }
+
+    /* ── SKILLS ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .skill-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .skill-card:hover { border-color: var(--accent-border); transform: translateY(-2px); }
+
+    .skill-cat {
+      font-size: 0.72rem;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.1em;
+      color: var(--accent2);
+      margin-bottom: 0.8rem;
+    }
+
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .skill-tag {
+      color: var(--text2);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.25rem 0.6rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+    }
+
+    /* ── PROJECTS ── */
+    #projects { background: var(--bg); }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      transition: border-color 0.25s, transform 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .project-card:hover { border-color: var(--accent-border); transform: translateY(-3px); }
+    .project-card:hover::before { opacity: 1; }
+
+    .project-card.featured {
+      grid-column: span 2;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 2.5rem;
+      align-items: start;
+    }
+
+    .project-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .project-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text3);
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+    }
+    .badge-active { background: var(--green-bg); color: var(--green); border: 1px solid rgba(79,216,154,0.2); }
+    .badge-done { background: var(--bg3); color: var(--text3); border: 1px solid var(--border); }
+    .badge-personal { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(245,200,66,0.2); }
+    .badge-team { background: var(--accent-bg); color: var(--accent2); border: 1px solid var(--accent-border); }
+
+    .project-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+      letter-spacing: -0.02em;
+    }
+
+    .project-period {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text3);
+      margin-bottom: 1rem;
+    }
+
+    .project-desc {
+      font-size: 0.9rem;
+      color: var(--text2);
+      line-height: 1.8;
+      margin-bottom: 1.2rem;
+    }
+
+    .project-stack { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.5rem; }
+    .stack-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      background: var(--accent-bg);
+      color: var(--accent2);
+      border: 1px solid var(--accent-border);
+    }
+
+    .project-points { list-style: none; }
+    .project-points li {
+      font-size: 0.88rem;
+      color: var(--text2);
+      padding: 0.35rem 0;
+      padding-left: 1.2rem;
+      position: relative;
+      line-height: 1.6;
+    }
+    .project-points li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 0.75rem;
+    }
+
+    .project-right-label {
+      font-size: 0.72rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text3);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+
+    /* ── CERT ── */
+    #cert { background: var(--bg2); border-top: 1px solid var(--border); }
+
+    .cert-card {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.8rem 2.5rem;
+      max-width: 560px;
+    }
+
+    .cert-icon {
+      width: 52px;
+      height: 52px;
+      background: var(--accent-bg);
+      border: 1px solid var(--accent-border);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    .cert-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+
+    .cert-meta {
+      font-size: 0.82rem;
+      color: var(--text3);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── CONTACT ── */
+    #contact {
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    #contact .section-title { margin-bottom: 1rem; }
+
+    .contact-sub {
+      color: var(--text2);
+      font-size: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2rem 3rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      color: var(--text3);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── FADE IN ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { gap: 1.5rem; }
+      section { padding: 4rem 1.5rem; }
+      .hero { padding: 7rem 1.5rem 4rem; }
+      .hero-scroll { left: 1.5rem; }
+      .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .project-card.featured { grid-column: span 1; grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+      .hero h1 { font-size: 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">SJC<span>.</span></div>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-bg-glow"></div>
+    <div class="hero-label">Frontend Developer</div>
+    <h1>
+      서지찬<br/>
+      <span class="dim" style="font-size: clamp(1.4rem, 3vw, 2.8rem); font-weight: 600; letter-spacing: 0.01em;">Seo Jichan</span>
+    </h1>
+    <p class="hero-sub">
+      React · TypeScript · Next.js를 기반으로<br/>
+      <strong style="color:var(--text);font-weight:500;">데이터 흐름 중심</strong>의 UI를 설계하는 개발자입니다.<br/>
+      AI 서비스와 외부 API 연동에서 쌓은 예외 처리 경험으로<br/>
+      안정적이고 확장 가능한 프론트엔드를 만듭니다.
+    </p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn-primary">프로젝트 보기 →</a>
+      <a href="mailto:chan7503@kookmin.ac.kr" class="btn-outline">이메일 보내기</a>
+    </div>
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      scroll
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-label">01 — About</div>
+    <div class="section-title">소개</div>
+    <div class="about-grid">
+      <div class="about-text fade-in">
+        <p>
+          국민대학교 소프트웨어학부에서 자료구조, 알고리즘, 운영체제,
+          컴퓨터네트워크, 데이터베이스 등 핵심 CS 과목을 이수하고,
+          현재 <strong>학부연구생</strong>으로 LLM 기반 연구 자동화 서비스를
+          개발하고 있습니다.
+        </p>
+        <p>
+          단순 UI 구현에 그치지 않고 <strong>사용자 입력에서 API 응답까지의
+          데이터 흐름 전체</strong>를 설계하는 것을 중요하게 생각합니다.
+          로딩·에러·빈 상태까지 꼼꼼히 처리하는 것이 실제 서비스 수준의
+          프론트엔드라고 믿습니다.
+        </p>
+        <p>
+          여러 팀 프로젝트를 통해 백엔드·AI 팀원과 API 인터페이스를 협의하고,
+          빠르게 핵심 기능을 구현하는 협업 경험을 쌓았습니다.
+        </p>
+      </div>
+      <div class="fade-in" style="animation-delay:0.1s">
+        <ul class="info-list">
+          <li><span class="label">학교</span><span class="value">국민대학교 소프트웨어학부</span></li>
+          <li><span class="label">입학</span><span class="value">2023.03 — 3학년 2학기 수료 (휴학 중)</span></li>
+          <li><span class="label">이메일</span><span class="value"><a href="mailto:chan7503@kookmin.ac.kr">chan7503@kookmin.ac.kr</a></span></li>
+          <li><span class="label">연락처</span><span class="value">010-7503-3451</span></li>
+          <li><span class="label">위치</span><span class="value">서울특별시 성북구</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills" style="background:var(--bg2); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+    <div class="section-label">02 — Skills</div>
+    <div class="section-title">기술 스택</div>
+    <div class="skills-grid">
+      <div class="skill-card fade-in">
+        <div class="skill-cat">Frontend</div>
+        <div class="skill-tags">
+          <span class="skill-tag">React</span>
+          <span class="skill-tag">Next.js</span>
+          <span class="skill-tag">Tailwind CSS</span>
+        </div>
+      </div>
+      <div class="skill-card fade-in">
+        <div class="skill-cat">Language</div>
+        <div class="skill-tags">
+          <span class="skill-tag">TypeScript</span>
+          <span class="skill-tag">JavaScript</span>
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">C++</span>
+        </div>
+      </div>
+      <div class="skill-card fade-in">
+        <div class="skill-cat">API &amp; Data</div>
+        <div class="skill-tags">
+          <span class="skill-tag">REST API</span>
+          <span class="skill-tag">Axios</span>
+          <span class="skill-tag">LLM API</span>
+        </div>
+      </div>
+      <div class="skill-card fade-in">
+        <div class="skill-cat">Tools</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Git</span>
+          <span class="skill-tag">GitHub</span>
+          <span class="skill-tag">Figma</span>
+          <span class="skill-tag">PyTorch</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-label">03 — Projects</div>
+    <div class="section-title">프로젝트</div>
+    <div class="projects-grid">
+
+      <!-- P1: PFM AI Chat (featured) -->
+      <div class="project-card featured fade-in">
+        <div>
+          <div class="project-meta">
+            <span class="project-num">01</span>
+            <span class="badge badge-active">진행 중</span>
+            <span class="badge badge-team">학부연구생</span>
+          </div>
+          <div class="project-title">PFM AI Chat</div>
+          <div class="project-period">2026.03 — 현재</div>
+          <p class="project-desc">
+            LLM을 활용해 신소재 시뮬레이션 과정을 자동화하는 AI Chat 기반 연구 지원 서비스.
+            사용자의 자연어 입력을 구조화된 시뮬레이션 요청으로 변환하는 프론트 파이프라인을 설계했습니다.
+          </p>
+          <div class="project-stack">
+            <span class="stack-tag">React</span>
+            <span class="stack-tag">TypeScript</span>
+            <span class="stack-tag">Next.js</span>
+            <span class="stack-tag">LLM API</span>
+            <span class="stack-tag">REST API</span>
+          </div>
+        </div>
+        <div>
+          <div class="project-right-label">주요 구현</div>
+          <ul class="project-points">
+            <li>채팅 인터페이스 및 메시지 단위 상태 관리 구조 설계 <code style="font-size:0.75rem;color:var(--accent2);background:var(--accent-bg);padding:0 4px;border-radius:3px;">loading / success / error</code></li>
+            <li>비동기 요청 흐름 설계 및 서버 응답 지연 대응 로딩 UI · fallback UX 구현</li>
+            <li>시뮬레이션 단계별 진행 상태를 반영한 UI 구성</li>
+            <li>레이스 컨디션 및 상태 꼬임 문제 해결 경험</li>
+            <li>프롬프트-응답 구조 이해 및 LLM 서비스 설계 경험</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- P2: 변호사 매칭 -->
+      <div class="project-card fade-in">
+        <div class="project-meta">
+          <span class="project-num">02</span>
+          <span class="badge badge-active">진행 중</span>
+          <span class="badge badge-team">팀 4인</span>
+        </div>
+        <div class="project-title">변호사 매칭 플랫폼</div>
+        <div class="project-period">2026.03 — 현재</div>
+        <p class="project-desc">
+          사용자 자연어 입력을 법률 도메인에 맞게 구조화하여 변호사를 연결해주는 법률 상담 매칭 서비스.
+        </p>
+        <div class="project-stack">
+          <span class="stack-tag">React</span>
+          <span class="stack-tag">TypeScript</span>
+          <span class="stack-tag">Next.js</span>
+          <span class="stack-tag">REST API</span>
+        </div>
+        <ul class="project-points">
+          <li>상담 → 의뢰서 생성 → 매칭 → 결과 확인 end-to-end 플로우 설계</li>
+          <li>Form / Modal / Card 재사용 컴포넌트 설계</li>
+          <li>로딩 / 에러 / 타임아웃 예외 처리 구조 구현</li>
+        </ul>
+      </div>
+
+      <!-- P3: 여떠잼 -->
+      <div class="project-card fade-in">
+        <div class="project-meta">
+          <span class="project-num">03</span>
+          <span class="badge badge-done">완료</span>
+          <span class="badge badge-team">팀 4인</span>
+        </div>
+        <div class="project-title">여떠잼 — 여행지 추천</div>
+        <div class="project-period">2025.09 — 2025.12</div>
+        <p class="project-desc">
+          사용자 취향과 상황을 기반으로 AI가 여행지를 추천해주는 단계형 Flow UI 웹 서비스.
+        </p>
+        <div class="project-stack">
+          <span class="stack-tag">React</span>
+          <span class="stack-tag">TypeScript</span>
+          <span class="stack-tag">Next.js</span>
+          <span class="stack-tag">Kakao Map API</span>
+        </div>
+        <ul class="project-points">
+          <li>질문 → 선택 → 결과 단계형 사용자 경험(Flow 기반 UI) 구현</li>
+          <li>추천 결과 카드 시각화 및 조건부 렌더링 로직</li>
+          <li>마커 중복 렌더링 · 응답 포맷 불일치 · 배포 API 경로 문제 해결</li>
+        </ul>
+      </div>
+
+      <!-- P4: 소비 습관 -->
+      <div class="project-card fade-in">
+        <div class="project-meta">
+          <span class="project-num">04</span>
+          <span class="badge badge-done">완료</span>
+          <span class="badge badge-personal">개인</span>
+        </div>
+        <div class="project-title">소비 습관 분석 서비스</div>
+        <div class="project-period">개인 프로젝트</div>
+        <p class="project-desc">
+          사용자의 소비 데이터를 기반으로 성향을 분석하고 결과를 시각화하는 웹 서비스.
+          입력 → 처리 → 결과 출력까지의 흐름을 단독으로 설계 및 구현했습니다.
+        </p>
+        <div class="project-stack">
+          <span class="stack-tag">Next.js</span>
+          <span class="stack-tag">React</span>
+          <span class="stack-tag">TypeScript</span>
+        </div>
+        <ul class="project-points">
+          <li>전체 프론트엔드 설계 및 개발</li>
+          <li>카드 기반 결과 UI 및 조건부 렌더링</li>
+          <li>API 연동을 통한 데이터 처리 및 시각화</li>
+        </ul>
+      </div>
+
+      <!-- P5: 동아리 홈페이지 -->
+      <div class="project-card fade-in">
+        <div class="project-meta">
+          <span class="project-num">05</span>
+          <span class="badge badge-done">완료</span>
+          <span class="badge badge-team">팀 4인</span>
+        </div>
+        <div class="project-title">동아리 홈페이지</div>
+        <div class="project-period">2026.01 — 2026.03</div>
+        <p class="project-desc">
+          동아리 소개, 공지사항, 활동 게시판 기능을 갖춘 운영형 웹사이트 개발.
+        </p>
+        <div class="project-stack">
+          <span class="stack-tag">React</span>
+          <span class="stack-tag">TypeScript</span>
+        </div>
+        <ul class="project-points">
+          <li>컴포넌트 기반 구조 설계 및 재사용성 고려</li>
+          <li>기본 CRUD 기능 구현</li>
+          <li>실제 사용자 대상 서비스 배포 경험</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CERT -->
+  <section id="cert">
+    <div class="section-label">04 — Certification</div>
+    <div class="section-title">자격증</div>
+    <div style="display:flex; flex-direction:column; gap:1rem; max-width:600px;">
+      <div class="cert-card fade-in">
+        <div class="cert-icon">☁</div>
+        <div>
+          <div class="cert-name">Microsoft Azure AI Fundamentals</div>
+          <div class="cert-meta">AI-900 &nbsp;·&nbsp; 2025.05 &nbsp;·&nbsp; Microsoft</div>
+        </div>
+      </div>
+      <div class="cert-card fade-in">
+        <div class="cert-icon">🏆</div>
+        <div>
+          <div class="cert-name">LG Aimers 7기 수료</div>
+          <div class="cert-meta">Data Intelligence &nbsp;·&nbsp; 해커톤: 식음업장 메뉴 수요 예측</div>
+          <div class="cert-meta" style="margin-top:0.25rem;">2025.07.01 ~ 2025.08.25 &nbsp;·&nbsp; LG AI연구원 · 고용노동부</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-label">05 — Contact</div>
+    <div class="section-title">연락하기</div>
+    <p class="contact-sub">프로젝트 협업이나 채용 관련 문의는 아래로 연락주세요.</p>
+    <div class="contact-links">
+      <a href="mailto:chan7503@kookmin.ac.kr" class="btn-primary">chan7503@kookmin.ac.kr →</a>
+      <a href="tel:01075033451" class="btn-outline">010-7503-3451</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>© 2026 서지찬 · Frontend Developer</span>
+    <span>React · TypeScript · Next.js</span>
+  </footer>
+
+  <script>
+    // Intersection Observer for fade-in
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
